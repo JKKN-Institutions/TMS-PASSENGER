@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
       try {
         // If we have a studentId from database integration, use it directly
-        if ((user as any).studentId) {
+        if ((user as any).studentId && (user as any).studentId !== undefined) {
           console.log('✅ Using database student ID for data fetching:', (user as any).studentId);
           
           // Try to fetch dashboard data and payment status in parallel
@@ -191,7 +191,7 @@ export default function DashboardPage() {
       setError('Please log in to access the dashboard');
       setIsLoading(false);
     }
-  }, [authLoading, isAuthenticated, user]);
+  }, [authLoading, isAuthenticated, user?.id, user?.email]); // Use stable user properties instead of entire user object
 
   // Enhanced Loading state with overlay
   if (authLoading || isLoading) {
