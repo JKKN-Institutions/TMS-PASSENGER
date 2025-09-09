@@ -20,12 +20,38 @@ export default function DriverHomePage() {
       try {
         // Check if user is authenticated and is a driver
         if (isLoading) {
+          console.log('🔄 Driver page: Waiting for auth to load...');
           return; // Wait for auth to load
         }
         
+        console.log('🔍 Driver page authentication check:', {
+          isAuthenticated,
+          userType,
+          user: user ? { id: user.id, email: user.email, role: (user as any)?.role } : null,
+          isLoading
+        });
+        
         if (!isAuthenticated || userType !== 'driver') {
           console.log('❌ Driver access denied:', { isAuthenticated, userType });
-          router.replace('/login');
+          
+          // Check for stored driver authentication as fallback
+          if (typeof window !== 'undefined') {
+            const driverUser = localStorage.getItem('tms_driver_user');
+            const driverToken = localStorage.getItem('tms_driver_token');
+            
+            if (driverUser && driverToken) {
+              console.log('🔄 Found stored driver authentication, but auth context not updated. Waiting for auth context...');
+              // Give auth context more time to initialize
+              setTimeout(() => {
+                console.log('🔄 Retrying after auth context delay...');
+                init();
+              }, 2000);
+              return;
+            }
+          }
+          
+          console.log('🔄 Redirecting to driver login page...');
+          router.replace('/driver/login');
           return;
         }
         

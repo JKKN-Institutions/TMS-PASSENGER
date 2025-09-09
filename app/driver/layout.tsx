@@ -37,6 +37,31 @@ export default function DriverLayout({
     return <div className="min-h-screen">{children}</div>;
   }
 
+  // Check if this is a direct OAuth redirect from parent app
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search) {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const state = params.get('state');
+      
+      // If we have OAuth parameters, redirect to callback for proper processing
+      if (code && state) {
+        console.log('🔄 Driver layout: Detected OAuth parameters, redirecting to callback for processing');
+        const callbackUrl = new URL('/auth/callback', window.location.origin);
+        params.forEach((value, key) => {
+          callbackUrl.searchParams.append(key, value);
+        });
+        
+        // Set driver OAuth flag for callback processing
+        sessionStorage.setItem('tms_oauth_role', 'driver');
+        
+        console.log('🔄 Redirecting to callback URL:', callbackUrl.toString());
+        window.location.href = callbackUrl.toString();
+        return;
+      }
+    }
+  }, []);
+
   // Show loading while checking auth
   if (isLoading) {
     return (

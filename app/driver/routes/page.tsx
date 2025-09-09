@@ -23,12 +23,14 @@ export default function DriverRoutesPage() {
         }
 
         if (!isAuthenticated) {
-          router.replace('/login');
+          console.log('❌ Driver routes access denied - not authenticated');
+          router.replace('/driver/login');
           return;
         }
 
         if (userType !== 'driver') {
-          router.replace('/login');
+          console.log('❌ Driver routes access denied - not a driver:', { userType });
+          router.replace('/driver/login');
           return;
         }
 
