@@ -197,7 +197,7 @@ NEXT_PUBLIC_REDIRECT_URI=http://localhost:3003/auth/callback
 NEXT_PUBLIC_AUTH_DEBUG=true
 
 # Production
-NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger.vercel.app/auth/callback
+NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger-taupe.vercel.app/auth/callback
 ```
 
 ## 📊 **Test Results Tracking**

@@ -26,6 +26,8 @@ import NotificationCenter from '@/components/notification-center';
 import { ThemeToggle } from '@/components/modern-ui-components';
 import { useTheme } from '@/components/theme-provider';
 import { EnrollmentProvider, useEnrollmentStatus } from '@/lib/enrollment/enrollment-context';
+import { ParentAppUser } from '@/lib/auth/parent-auth-service';
+import { DriverUser } from '@/lib/auth/driver-auth-service';
 
 interface NavigationItem {
   name: string;
@@ -35,6 +37,30 @@ interface NavigationItem {
   requiresEnrollment?: boolean;
   disabled?: boolean;
 }
+
+// Type guard functions
+const isParentAppUser = (user: any): user is ParentAppUser => {
+  return user && 'full_name' in user;
+};
+
+const isDriverUser = (user: any): user is DriverUser => {
+  return user && 'driver_name' in user;
+};
+
+// Helper function to get user display name
+const getUserDisplayName = (user: ParentAppUser | DriverUser | null): string => {
+  if (!user) return 'User';
+  if (isParentAppUser(user)) return user.full_name;
+  if (isDriverUser(user)) return user.driver_name;
+  return 'User';
+};
+
+// Helper function to get user initials
+const getUserInitials = (user: ParentAppUser | DriverUser | null): string => {
+  if (!user) return 'U';
+  const name = getUserDisplayName(user);
+  return name.charAt(0).toUpperCase();
+};
 
 function DashboardContent({
   children,
@@ -223,14 +249,14 @@ function DashboardContent({
               <div className="relative">
                 <div className="h-10 w-10 rounded-full bg-green-600 flex items-center justify-center">
                   <span className="text-sm font-bold text-white">
-                    {user?.full_name?.charAt(0).toUpperCase()}
+                    {getUserInitials(user)}
                   </span>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">
-                  {user?.full_name}
+                  {getUserDisplayName(user)}
                 </p>
                 <p className="text-xs text-gray-500 truncate">
                   {user?.email || 'student@email.com'}
@@ -319,7 +345,7 @@ function DashboardContent({
             <div className="relative">
               <img
                 src="/api/placeholder/40/40"
-                alt={user?.full_name}
+                alt={getUserDisplayName(user)}
                 className="h-10 w-10 rounded-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -329,14 +355,14 @@ function DashboardContent({
               />
               <div className="hidden h-10 w-10 rounded-full bg-green-600 flex items-center justify-center">
                 <span className="text-sm font-bold text-white">
-                  {user?.full_name?.charAt(0).toUpperCase()}
+                  {getUserInitials(user)}
                 </span>
               </div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 truncate">
-                {user?.full_name || 'Student'}
+                {getUserDisplayName(user)}
               </p>
               <p className="text-xs text-gray-500 truncate">
                 {user?.email || 'student@email.com'}
@@ -408,7 +434,7 @@ function DashboardContent({
             <div className="relative">
               <div className="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center cursor-pointer hover:bg-green-700 transition-colors">
                 <span className="text-xs font-bold text-white">
-                  {user?.full_name?.charAt(0).toUpperCase() || 'S'}
+                  {getUserInitials(user)}
                 </span>
               </div>
             </div>

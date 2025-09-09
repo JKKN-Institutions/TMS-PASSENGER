@@ -6,8 +6,8 @@
 - [ ] `NEXT_PUBLIC_PARENT_APP_URL` = `https://my.jkkn.ac.in`
 - [ ] `NEXT_PUBLIC_APP_ID` = `transport_management_system_menrm674`
 - [ ] `NEXT_PUBLIC_API_KEY` = `app_e20655605d48ebce_cfa1ffe34268949a`
-- [ ] `NEXT_PUBLIC_REDIRECT_URI` = `https://tms-passenger.vercel.app/auth/callback`
-- [ ] `NEXT_PUBLIC_DRIVER_REDIRECT_URI` = `https://tms-passenger.vercel.app/auth/driver-callback`
+- [ ] `NEXT_PUBLIC_REDIRECT_URI` = `https://tms-passenger-taupe.vercel.app/auth/callback`
+- [ ] `NEXT_PUBLIC_DRIVER_REDIRECT_URI` = `https://tms-passenger-taupe.vercel.app/auth/driver-callback`
 - [ ] `NEXT_PUBLIC_AUTH_DEBUG` = `true`
 - [ ] `NEXT_PUBLIC_SUPABASE_URL` = `https://gsvbrytleqdxpdfbykqh.supabase.co`
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
@@ -21,8 +21,8 @@
 ### 3. Parent App Registration
 - [ ] TMS app is registered with MYJKKN parent app
 - [ ] Redirect URIs are whitelisted in parent app:
-  - `https://tms-passenger.vercel.app/auth/callback`
-  - `https://tms-passenger.vercel.app/auth/driver-callback`
+  - `https://tms-passenger-taupe.vercel.app/auth/callback`
+  - `https://tms-passenger-taupe.vercel.app/auth/driver-callback`
 - [ ] App ID and API key are correct
 
 ## 🚀 Deployment Steps
@@ -40,7 +40,7 @@ git push origin main
 - [ ] Deploy the application
 
 ### 3. Verify Deployment
-- [ ] Visit https://tms-passenger.vercel.app/
+- [ ] Visit https://tms-passenger-taupe.vercel.app/
 - [ ] Run the verification script in browser console:
   ```javascript
   // Copy and paste the content of verify-production-config.js

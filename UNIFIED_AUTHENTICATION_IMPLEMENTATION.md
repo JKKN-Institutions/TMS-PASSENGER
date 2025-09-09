@@ -36,11 +36,11 @@ Successfully modified the driver authentication system to use the same callback 
 **Changes**:
 ```env
 # Before
-NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger.vercel.app/auth/callback
-NEXT_PUBLIC_DRIVER_REDIRECT_URI=https://tms-passenger.vercel.app/auth/driver-callback
+NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger-taupe.vercel.app/auth/callback
+NEXT_PUBLIC_DRIVER_REDIRECT_URI=https://tms-passenger-taupe.vercel.app/auth/driver-callback
 
 # After
-NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger.vercel.app/auth/callback
+NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger-taupe.vercel.app/auth/callback
 # NEXT_PUBLIC_DRIVER_REDIRECT_URI removed
 ```
 
@@ -95,7 +95,7 @@ NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger.vercel.app/auth/callback
 login(); // No role flag set
 
 // 2. OAuth URL generated with unified callback
-redirect_uri=https://tms-passenger.vercel.app/auth/callback
+redirect_uri=https://tms-passenger-taupe.vercel.app/auth/callback
 
 // 3. Callback processing
 const userType = sessionStorage.getItem('tms_oauth_role') || 'passenger';
@@ -112,7 +112,7 @@ sessionStorage.setItem('tms_oauth_role', 'driver');
 loginDriverOAuth();
 
 // 2. OAuth URL generated with unified callback
-redirect_uri=https://tms-passenger.vercel.app/auth/callback
+redirect_uri=https://tms-passenger-taupe.vercel.app/auth/callback
 
 // 3. Callback processing
 const userType = sessionStorage.getItem('tms_oauth_role');
@@ -142,13 +142,13 @@ sessionStorage.setItem('tms_oauth_role', 'driver');
 Only one callback URL needs to be configured:
 ```
 Allowed Redirect URIs:
-- https://tms-passenger.vercel.app/auth/callback
+- https://tms-passenger-taupe.vercel.app/auth/callback
 ```
 
 ### **Environment Variables**
 ```env
 # Required
-NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger.vercel.app/auth/callback
+NEXT_PUBLIC_REDIRECT_URI=https://tms-passenger-taupe.vercel.app/auth/callback
 
 # Optional
 NEXT_PUBLIC_AUTH_DEBUG=true
