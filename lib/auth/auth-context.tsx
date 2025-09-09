@@ -138,7 +138,7 @@ export function AuthProvider({
           setUserType(normalizedUserType);
 
           // For passenger users, check if user object needs enhancement (missing studentId)
-          if (normalizedUserType === 'passenger' && authState.user && (!authState.user.studentId || authState.user.studentId === undefined) && authState.user.email) {
+          if (normalizedUserType === 'passenger' && authState.user && 'studentId' in authState.user && !authState.user.studentId && authState.user.email) {
             console.log('🔧 Passenger user object missing enhanced data, attempting to enhance...');
             try {
               const integrationResult = await ParentAppIntegrationService.findOrCreateStudentFromParentApp(authState.user as ParentAppUser);

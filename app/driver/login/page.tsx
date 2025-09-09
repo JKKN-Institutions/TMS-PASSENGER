@@ -1,19 +1,62 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Car, Mail, Lock, AlertCircle, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 
 export default function DriverLoginPage() {
   const router = useRouter();
-  const { loginDriverDirect } = useAuth();
+  const { loginDriverDirect, isAuthenticated, userType, isLoading } = useAuth();
   const [email, setEmail] = useState('arthanareswaran22@jkkn.ac.in');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Check if user is already authenticated and redirect
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && userType === 'driver') {
+      console.log('✅ Driver already authenticated, redirecting to dashboard...', { userType, isAuthenticated });
+      router.replace('/driver');
+    }
+  }, [isAuthenticated, userType, isLoading, router]);
+
+  // Additional check for stored driver authentication (fallback)
+  useEffect(() => {
+    const checkStoredDriverAuth = () => {
+      if (typeof window === 'undefined') return;
+      
+      const driverUser = localStorage.getItem('tms_driver_user');
+      const driverToken = localStorage.getItem('tms_driver_token');
+      
+      if (driverUser && driverToken && !isAuthenticated) {
+        console.log('🔄 Found stored driver authentication, redirecting...');
+        router.replace('/driver');
+      }
+    };
+
+    // Check after a short delay to allow auth context to initialize
+    const timeoutId = setTimeout(checkStoredDriverAuth, 1000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [isAuthenticated, router]);
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-green-200 border-t-green-600 mx-auto mb-6"></div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Checking Authentication...</h2>
+            <p className="text-gray-600">Please wait while we verify your login status.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

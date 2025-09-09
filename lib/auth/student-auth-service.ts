@@ -107,10 +107,8 @@ class StudentAuthService {
         const enhancedUser = {
           ...user,
           role: 'student',
-          studentId: studentMember.id, // Use camelCase for consistency
-          student_id: studentMember.id, // Keep underscore version for compatibility
-          rollNumber: studentMember.roll_number, // Use camelCase for consistency
-          roll_number: studentMember.roll_number, // Keep underscore version for compatibility
+          student_id: studentMember.id,
+          roll_number: studentMember.roll_number,
           department: studentMember.department?.department_name || 'Unknown Department',
           institution: studentMember.institution?.name || 'Unknown Institution',
           program: studentMember.program?.program_name || '',
@@ -138,8 +136,8 @@ class StudentAuthService {
         console.log('✅ User enhanced with student data:', {
           email: enhancedUser.email,
           role: enhancedUser.role,
-          studentId: enhancedUser.studentId,
-          rollNumber: enhancedUser.rollNumber
+          studentId: enhancedUser.student_id,
+          rollNumber: enhancedUser.roll_number
         });
         
         return enhancedUser;

@@ -27,10 +27,40 @@ export default function AutoLoginWrapper({ children }: AutoLoginWrapperProps) {
 
   useEffect(() => {
     const performAutoLogin = async () => {
-      // Skip auto-login for certain pages
-      const skipPages = ['/login', '/auth/callback', '/driver/login', '/no-oauth', '/driver-login'];
+      // Skip auto-login for certain pages, but still check for existing authentication
+      const skipPages = ['/login', '/auth/callback', '/no-oauth', '/driver-login'];
       if (skipPages.some(page => pathname.startsWith(page))) {
         console.log('🔄 Auto-login: Skipping for page:', pathname);
+        setAutoLoginState({ loading: false, attempted: true });
+        return;
+      }
+
+      // Special handling for driver login page - check if already authenticated
+      if (pathname.startsWith('/driver/login')) {
+        console.log('🔄 Auto-login: Checking driver login page for existing authentication...');
+        
+        // If already authenticated as driver, redirect to dashboard
+        if (isAuthenticated && user && (user as any)?.role === 'driver') {
+          console.log('✅ Auto-login: Driver already authenticated, redirecting to dashboard');
+          setAutoLoginState({ loading: false, attempted: true });
+          window.location.href = '/driver';
+          return;
+        }
+        
+        // Check localStorage for stored driver authentication
+        if (typeof window !== 'undefined') {
+          const driverUser = localStorage.getItem('tms_driver_user');
+          const driverToken = localStorage.getItem('tms_driver_token');
+          
+          if (driverUser && driverToken) {
+            console.log('✅ Auto-login: Found stored driver authentication, redirecting to dashboard');
+            setAutoLoginState({ loading: false, attempted: true });
+            window.location.href = '/driver';
+            return;
+          }
+        }
+        
+        console.log('🔄 Auto-login: No driver authentication found, staying on login page');
         setAutoLoginState({ loading: false, attempted: true });
         return;
       }

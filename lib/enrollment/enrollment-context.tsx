@@ -52,10 +52,9 @@ export function EnrollmentProvider({
       setIsLoading(true);
       setError(null);
 
-      // Get student ID from user context - prioritize studentId field
-      const studentId = (user as any)?.studentId || 
-                       (user as any)?.student_id || 
-                       (user as any)?.sub || 
+      // Get student ID from user context - prioritize JWT sub field
+      const studentId = (user as any)?.sub || 
+                       (user as any)?.studentId || 
                        user.id;
       
       console.log('🔍 Checking enrollment status for student:', {
