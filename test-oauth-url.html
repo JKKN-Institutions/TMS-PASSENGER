@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver OAuth URL Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 Driver OAuth URL Test</h1>
+        
+        <div class="test-section info">
+            <h3>📋 Current Configuration</h3>
+            <div id="config-info"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 OAuth URL Generation Test</h3>
+            <button class="btn-primary" onclick="testOAuthURL()">Generate Driver OAuth URL</button>
+            <div id="oauth-url-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Manual OAuth Flow Test</h3>
+            <p>Click this button to start the actual OAuth flow:</p>
+            <button class="btn-success" onclick="startDriverOAuth()">Start Driver OAuth Flow</button>
+            <div id="oauth-flow-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 Environment Debug</h3>
+            <button class="btn-primary" onclick="checkEnvironment()">Check Environment Variables</button>
+            <div id="env-debug-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Test Results</h3>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration (same as your app)
+        const config = {
+            parentAppUrl: 'https://my.jkkn.ac.in',
+            appId: 'transport_management_system_menrm674',
+            apiKey: 'app_e20655605d48ebce_cfa1ffe34268949a',
+            redirectUri: 'https://tms-passenger-taupe.vercel.app/auth/callback'
+        };
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            console.log(logEntry);
+            
+            const resultsDiv = document.getElementById('test-results');
+            const logDiv = document.createElement('div');
+            logDiv.style.margin = '5px 0';
+            logDiv.style.padding = '5px';
+            logDiv.style.borderRadius = '3px';
+            
+            if (type === 'success') {
+                logDiv.style.background = '#d4edda';
+                logDiv.style.color = '#155724';
+            } else if (type === 'error') {
+                logDiv.style.background = '#f8d7da';
+                logDiv.style.color = '#721c24';
+            } else {
+                logDiv.style.background = '#e2e3e5';
+                logDiv.style.color = '#383d41';
+            }
+            
+            logDiv.textContent = logEntry;
+            resultsDiv.appendChild(logDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function updateConfigInfo() {
+            const configDiv = document.getElementById('config-info');
+            configDiv.innerHTML = `
+                <strong>Parent App URL:</strong> ${config.parentAppUrl}<br>
+                <strong>App ID:</strong> ${config.appId}<br>
+                <strong>Redirect URI:</strong> ${config.redirectUri}<br>
+                <strong>Current Origin:</strong> ${window.location.origin}<br>
+                <strong>Expected Domain:</strong> tms-passenger-taupe.vercel.app
+            `;
+        }
+
+        function generateState() {
+            return 'test_' + Math.random().toString(36).substring(2) + '_' + Date.now();
+        }
+
+        function testOAuthURL() {
+            log('🔗 Generating OAuth URL for driver authentication...', 'info');
+            
+            const state = generateState();
+            sessionStorage.setItem('oauth_state', state);
+            sessionStorage.setItem('tms_oauth_role', 'driver');
+            
+            const authUrl = new URL('/api/auth/child-app/authorize', config.parentAppUrl);
+            authUrl.searchParams.append('response_type', 'code');
+            authUrl.searchParams.append('client_id', config.appId);
+            authUrl.searchParams.append('app_id', config.appId);
+            authUrl.searchParams.append('redirect_uri', config.redirectUri);
+            authUrl.searchParams.append('scope', 'read write profile');
+            authUrl.searchParams.append('state', state);
+            authUrl.searchParams.append('user_type', 'driver');
+            authUrl.searchParams.append('oauth_role', 'driver');
+            authUrl.searchParams.append('api_key', config.apiKey);
+            
+            log('✅ OAuth URL generated successfully', 'success');
+            log('🔍 Full OAuth URL: ' + authUrl.toString(), 'info');
+            log('🚨 CRITICAL - redirect_uri parameter: ' + config.redirectUri, 'info');
+            
+            const resultDiv = document.getElementById('oauth-url-result');
+            resultDiv.innerHTML = `
+                <h4>Generated OAuth URL:</h4>
+                <pre style="word-break: break-all; white-space: pre-wrap;">${authUrl.toString()}</pre>
+                <p><strong>Redirect URI Parameter:</strong> <code>${config.redirectUri}</code></p>
+                <p><strong>Expected Result:</strong> Parent app should redirect to <code>${config.redirectUri}</code></p>
+                <p><strong>Actual Result:</strong> Parent app redirects to <code>https://my.jkkn.ac.in/driver</code> ❌</p>
+            `;
+        }
+
+        function startDriverOAuth() {
+            log('🚗 Starting actual driver OAuth flow...', 'info');
+            
+            const state = generateState();
+            sessionStorage.setItem('oauth_state', state);
+            sessionStorage.setItem('tms_oauth_role', 'driver');
+            
+            const authUrl = new URL('/api/auth/child-app/authorize', config.parentAppUrl);
+            authUrl.searchParams.append('response_type', 'code');
+            authUrl.searchParams.append('client_id', config.appId);
+            authUrl.searchParams.append('app_id', config.appId);
+            authUrl.searchParams.append('redirect_uri', config.redirectUri);
+            authUrl.searchParams.append('scope', 'read write profile');
+            authUrl.searchParams.append('state', state);
+            authUrl.searchParams.append('user_type', 'driver');
+            authUrl.searchParams.append('oauth_role', 'driver');
+            authUrl.searchParams.append('api_key', config.apiKey);
+            
+            log('🔄 Redirecting to parent app for OAuth...', 'info');
+            log('🚨 Watch where the parent app redirects you!', 'info');
+            
+            // Start the OAuth flow
+            window.location.href = authUrl.toString();
+        }
+
+        function checkEnvironment() {
+            log('🔍 Checking environment configuration...', 'info');
+            
+            const envCheck = {
+                currentOrigin: window.location.origin,
+                expectedDomain: 'tms-passenger-taupe.vercel.app',
+                domainMatch: window.location.origin.includes('tms-passenger-taupe.vercel.app'),
+                redirectUri: config.redirectUri,
+                redirectUriMatch: config.redirectUri.includes('tms-passenger-taupe.vercel.app')
+            };
+            
+            log('✅ Environment check completed', 'success');
+            
+            const resultDiv = document.getElementById('env-debug-result');
+            resultDiv.innerHTML = `
+                <h4>Environment Debug Results:</h4>
+                <pre>${JSON.stringify(envCheck, null, 2)}</pre>
+                ${envCheck.domainMatch ? 
+                    '<p class="success">✅ Running on correct domain</p>' : 
+                    '<p class="error">❌ Domain mismatch detected</p>'
+                }
+                ${envCheck.redirectUriMatch ? 
+                    '<p class="success">✅ Redirect URI points to correct domain</p>' : 
+                    '<p class="error">❌ Redirect URI domain mismatch</p>'
+                }
+            `;
+        }
+
+        // Initialize page
+        updateConfigInfo();
+        log('🧪 Driver OAuth test page loaded', 'success');
+        log('📋 Use the buttons above to test different aspects of the OAuth flow', 'info');
+    </script>
+</body>
+</html>

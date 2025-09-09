@@ -145,6 +145,12 @@ class ParentAuthService {
 
     console.log('🔗 [PARENT AUTH] Step 8: OAuth URL generated successfully');
     console.log('🔗 [PARENT AUTH] Full OAuth URL:', authUrl.toString());
+    console.log('🚨 [PARENT AUTH] CRITICAL - Redirect URI being sent:', redirectUri);
+    console.log('🚨 [PARENT AUTH] Environment check:', {
+      NEXT_PUBLIC_REDIRECT_URI: process.env.NEXT_PUBLIC_REDIRECT_URI,
+      fallback: 'http://localhost:3003/auth/callback',
+      actualRedirectUri: redirectUri
+    });
     console.log('🔗 [PARENT AUTH] OAuth Parameters:', {
       response_type: 'code',
       app_id: process.env.NEXT_PUBLIC_APP_ID || 'transport_management_system_menrm674',
